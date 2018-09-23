@@ -4,6 +4,7 @@ body {
 
 canvas {
   bottom: 0;
+  filter: blur(1px);
   left: 0;
   position: fixed;
   right: 0;
