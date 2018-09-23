@@ -4,5 +4,9 @@ head
   script(type="text/javascript")
     | window.__DEV__ = !{dev}
 body
+  .controls
+    button.toggle-anim#toggle-anim &#9658;
+    button.reset#reset &#9724;
+    .generation#generation Generation 1
   canvas(id="canvas")
   script(type="text/javascript" src="/dist/bundle.js")

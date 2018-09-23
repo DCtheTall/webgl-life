@@ -23,12 +23,40 @@ function initCanvasWithNoise(): HTMLCanvasElement {
   return canvas;
 }
 
+function cloneCanvas(oldCanvas: HTMLCanvasElement): HTMLCanvasElement {
+  const newCanvas = document.createElement('canvas');
+  const context = newCanvas.getContext('2d');
+  newCanvas.width = oldCanvas.width;
+  newCanvas.height = oldCanvas.height;
+  context.drawImage(oldCanvas, 0, 0);
+  return newCanvas;
+}
+
 
 function savePreviousFrameAsTexture(
   scene: Scene,
   canvas: HTMLCanvasElement = initCanvasWithNoise(),
 ) {
-  scene.initTexture('previousFrame', canvas);
+  scene.initTexture('previousFrame', cloneCanvas(canvas));
+}
+
+
+function render(
+  scene: Scene,
+  canvas: HTMLCanvasElement,
+  incrementGeneration: () => void,
+) {
+  scene.render({
+    animate: false,
+    draw({ firstRender }) {
+      incrementGeneration();
+      scene.gl.activeTexture(scene.gl.TEXTURE0);
+      scene.gl.bindTexture(
+        scene.gl.TEXTURE_2D, scene.getTexture('previousFrame'));
+      scene.getRenderFrame('main').render(firstRender);
+      savePreviousFrameAsTexture(scene, canvas);
+    },
+  });
 }
 
 
@@ -39,7 +67,29 @@ document.body.onload = function main() {
   canvas.height = window.innerHeight;
 
   const scene = new Scene(canvas);
-  savePreviousFrameAsTexture(scene);
+  let generation = 0;
+
+  const generationDisplay =
+    <HTMLDivElement>document.getElementById('generation');
+  const incrementGeneration = () =>
+    (console.log('h') || (generationDisplay.innerHTML = `Generation ${generation += 1}`));
+
+  const toggleAnimationButton =
+    <HTMLButtonElement>document.getElementById('toggle-anim');
+  toggleAnimationButton.addEventListener('click', () => {
+    scene.toggleAnimation();
+    toggleAnimationButton.innerHTML =
+      scene.getIsAnimating() ? '&#10074;&#10074;' : '&#9658;';
+  });
+
+  const resetButton = <HTMLButtonElement>document.getElementById('reset');
+  resetButton.addEventListener('click', () => {
+    if (scene.getIsAnimating()) scene.toggleAnimation();
+    generation = 0;
+    toggleAnimationButton.innerHTML = '&#9658;';
+    savePreviousFrameAsTexture(scene); // reset previous frame to noise
+    render(scene, canvas, incrementGeneration);
+  });
 
   scene.setRenderFrame('main', () => new RenderFrame({
     gl: scene.gl,
@@ -78,16 +128,6 @@ document.body.onload = function main() {
     }),
   }));
 
-  scene.render({
-    animate: true,
-    draw({ firstRender }) {
-      scene.gl.activeTexture(scene.gl.TEXTURE0);
-      scene.gl.bindTexture(
-        scene.gl.TEXTURE_2D, scene.getTexture('previousFrame'));
-      scene.getRenderFrame('main').render(firstRender);
-      savePreviousFrameAsTexture(scene, canvas);
-    },
-  });
-
-  document.body.onclick = scene.toggleAnimation.bind(scene);
+  savePreviousFrameAsTexture(scene);
+  render(scene, canvas, incrementGeneration);
 };

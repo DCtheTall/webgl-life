@@ -10,8 +10,8 @@ export default class Scene {
   private textures: { [index: string]: WebGLTexture };
 
   private renderFn: () => void;
-  private animate: boolean;
   private requestAnimFrame: number;
+  private isAnimating: boolean;
 
   public readonly gl: WebGLRenderingContext;
 
@@ -42,6 +42,10 @@ export default class Scene {
     return -(Date.now() - this.firstRender) / 100;
   }
 
+  public getIsAnimating(): boolean {
+    return this.isAnimating;
+  }
+
   public initTexture(
     key: string,
     src: HTMLImageElement|HTMLCanvasElement,
@@ -69,11 +73,12 @@ export default class Scene {
   }
 
   public toggleAnimation() {
-    this.animate = !this.animate;
-    if (this.animate) {
+    this.isAnimating = !this.isAnimating;
+    if (this.isAnimating) {
       this.renderFn();
     } else {
       window.cancelAnimationFrame(this.requestAnimFrame);
+      this.requestAnimFrame = null;
     }
   }
 
@@ -81,7 +86,7 @@ export default class Scene {
     animate = false,
     draw = ({ animate = false, firstRender = true }) => { },
   }) {
-    this.animate = animate;
+    this.isAnimating = animate;
     this.renderFn = () => {
       const now = Date.now();
       if (!this.lastRender) this.firstRender = now;
@@ -92,7 +97,7 @@ export default class Scene {
           && ((now - this.lastRender) < (1000 / FRAME_RATE))
         )
       ) {
-        if (this.animate) {
+        if (this.isAnimating) {
           this.requestAnimFrame = window.requestAnimationFrame(this.renderFn);
         }
         return;
@@ -101,12 +106,15 @@ export default class Scene {
       draw({ animate, firstRender: !this.lastRender });
       this.rendering = false;
       this.lastRender = now;
-      if (this.animate) {
+      if (this.isAnimating) {
         this.requestAnimFrame = window.requestAnimationFrame(this.renderFn);
       }
     }
     this.renderFn = this.renderFn.bind(this);
-    if (animate)
+    if (animate) {
       window.requestAnimationFrame(this.renderFn);
+    } else {
+      this.renderFn();
+    }
   }
 }

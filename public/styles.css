@@ -7,5 +7,40 @@ canvas {
   left: 0;
   position: fixed;
   right: 0;
+  top: 40px;
+  z-index: 1;
+}
+
+.controls {
+  align-items: center;
+  background: linear-gradient(0deg, #333, #555);
+  border-bottom: 1px solid black;
+  box-shadow: 0px 3px 0 5px rgba(0, 0, 0, .05);
+  display: flex;
+  height: 40px;
+  left: 0;
+  position: fixed;
+  right: 0;
   top: 0;
+  z-index: 2;
+}
+
+.controls button {
+  background: none;
+  color: #888;
+  cursor: pointer;
+  border: none;
+  border-right: 1px solid black;
+  box-sizing: border-box;
+  font-size: 18px;
+  height: 100%;
+  outline: none  !important;
+  width: 60px;
+}
+
+.generation {
+  color: #888;
+  margin-left: 10px;
+  font-family: Helvetica;
+  font-size: 16px;
 }
