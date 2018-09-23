@@ -4,13 +4,22 @@
   "description": "GPU accelerated Conway's Game of Life",
   "main": "bin/start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bin/start",
+    "dev": "webpack --mode development --progress --watch",
+    "build": "webpack --mode production"
   },
   "author": "Dylan Cutler",
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
+    "glslify": "^6.3.1",
     "morgan": "^1.9.1",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "raw-loader": "^0.5.1",
+    "ts-loader": "^5.2.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.1"
   }
 }
