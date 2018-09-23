@@ -79,7 +79,7 @@ document.body.onload = function main() {
   }));
 
   scene.render({
-    animate: false,
+    animate: true,
     draw({ firstRender }) {
       scene.gl.activeTexture(scene.gl.TEXTURE0);
       scene.gl.bindTexture(

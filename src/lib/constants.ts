@@ -1,5 +1,5 @@
 export const CLEAR_COLOR = [0, 0, 0, 1];
-export const FRAME_RATE = 30;
+export const FRAME_RATE = 5;
 
 export const FRAGMENT_SHADER = require('../shaders/fragment.glsl');
 export const VERTEX_SHADER = require('../shaders/vertex.glsl');

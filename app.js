@@ -10,6 +10,6 @@ app.use(
     join(resolve('.'), 'public')));
 app.set('view engine', 'pug');
 app.set('views', join(resolve('.'), 'views'));
-app.get('/', (_, res) => res.render('index'));
+app.get('/', (_, res) => res.render('index', { dev: process.env.NODE_ENV === 'development' }));
 
 module.exports = app;
