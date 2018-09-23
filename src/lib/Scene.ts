@@ -9,6 +9,10 @@ export default class Scene {
   private renderFrames: { [index: string]: RenderFrame };
   private textures: { [index: string]: WebGLTexture };
 
+  private renderFn: () => void;
+  private animate: boolean;
+  private requestAnimFrame: number;
+
   public readonly gl: WebGLRenderingContext;
 
   static isPowerOfTwo(n: number): boolean {
@@ -64,30 +68,45 @@ export default class Scene {
     this.renderFrames[key] = callback(this.gl);
   }
 
+  public toggleAnimation() {
+    this.animate = !this.animate;
+    if (this.animate) {
+      this.renderFn();
+    } else {
+      window.cancelAnimationFrame(this.requestAnimFrame);
+    }
+  }
+
   public render({
     animate = false,
     draw = ({ animate = false, firstRender = true }) => { },
   }) {
-    const now = Date.now();
-    if (!this.lastRender) this.firstRender = now;
-    if (
-      this.rendering
-      || (
-        this.lastRender
-        && ((now - this.lastRender) < (1000 / FRAME_RATE))
-      )
-    ) {
-      if (animate)
-        window.requestAnimationFrame(
-          () => this.render({ animate: true, draw }));
-      return;
+    this.animate = animate;
+    this.renderFn = () => {
+      const now = Date.now();
+      if (!this.lastRender) this.firstRender = now;
+      if (
+        this.rendering
+        || (
+          this.lastRender
+          && ((now - this.lastRender) < (1000 / FRAME_RATE))
+        )
+      ) {
+        if (this.animate) {
+          this.requestAnimFrame = window.requestAnimationFrame(this.renderFn);
+        }
+        return;
+      }
+      this.rendering = true;
+      draw({ animate, firstRender: !this.lastRender });
+      this.rendering = false;
+      this.lastRender = now;
+      if (this.animate) {
+        this.requestAnimFrame = window.requestAnimationFrame(this.renderFn);
+      }
     }
-    this.rendering = true;
-    draw({ animate, firstRender: !this.lastRender });
-    this.rendering = false;
-    this.lastRender = now;
+    this.renderFn = this.renderFn.bind(this);
     if (animate)
-      window.requestAnimationFrame(
-        () => this.render({ animate: true, draw }));
+      window.requestAnimationFrame(this.renderFn);
   }
 }

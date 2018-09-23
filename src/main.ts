@@ -88,4 +88,6 @@ document.body.onload = function main() {
       savePreviousFrameAsTexture(scene, canvas);
     },
   });
+
+  document.body.onclick = scene.toggleAnimation.bind(scene);
 };
