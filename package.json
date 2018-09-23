@@ -1,0 +1,16 @@
+{
+  "name": "webgl-life",
+  "version": "1.0.0",
+  "description": "GPU accelerated Conway's Game of Life",
+  "main": "bin/start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dylan Cutler",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.1",
+    "pug": "^2.0.3"
+  }
+}
