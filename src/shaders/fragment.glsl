@@ -7,6 +7,7 @@ uniform sampler2D u_PreviousFrame;
 
 #pragma glslify: getPreviousCellIsAlive = require('./lib/get-previous-cell-is-alive.glsl', getPreviousCellIsAlive=getPreviousCellIsAlive);
 #pragma glslify: getNumberOfNeighbors = require('./lib/get-number-of-neighbors.glsl');
+#pragma glslify: getNextColor = require('./lib/get-next-color.glsl');
 
 /*
 Get if a cell is alive this current generation
@@ -25,6 +26,7 @@ bool getCellIsAlive(
 }
 
 void main() {
-  gl_FragColor = vec4(
-    vec3(getCellIsAlive(u_PreviousFrame, v_TextureCoord, u_Resolution)), 1.);
+  bool alive = getCellIsAlive(u_PreviousFrame, v_TextureCoord, u_Resolution);
+  vec3 color = getNextColor(alive, u_PreviousFrame, v_TextureCoord);
+  gl_FragColor = vec4(color, 1.);
 }
