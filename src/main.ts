@@ -8,6 +8,11 @@ import Scene from './lib/Scene';
 import RenderFrame from './lib/RenderFrame';
 import Shader from './lib/Shader';
 
+const PLAY_SYMBOL = '&#9658;';
+const PAUSE_SYMBOL = '&#10074;&#10074;';
+const BLACK = '#000';
+const WHITE = '#fff';
+
 
 function initCanvasWithNoise(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -16,7 +21,7 @@ function initCanvasWithNoise(): HTMLCanvasElement {
   const context = canvas.getContext('2d');
   for (let i = 0; i < canvas.width; i++) {
     for (let k = 0; k < canvas.height; k++) {
-      context.fillStyle = Math.random() > .5 ? '#000' : '#fff';
+      context.fillStyle = Math.random() > .5 ? BLACK : WHITE;
       context.fillRect(i, k, 1, 1);
     }
   }
@@ -37,7 +42,8 @@ function savePreviousFrameAsTexture(
   scene: Scene,
   canvas: HTMLCanvasElement = initCanvasWithNoise(),
 ) {
-  scene.initTexture('previousFrame', cloneCanvas(canvas));
+  console.log('saved');
+  scene.initTexture('previousFrame', canvas);
 }
 
 
@@ -49,6 +55,7 @@ function render(
   scene.render({
     animate: false,
     draw({ firstRender }) {
+      console.log('rendered')
       incrementGeneration();
       scene.gl.activeTexture(scene.gl.TEXTURE0);
       scene.gl.bindTexture(
@@ -72,21 +79,21 @@ document.body.onload = function main() {
   const generationDisplay =
     <HTMLDivElement>document.getElementById('generation');
   const incrementGeneration = () =>
-    (console.log('h') || (generationDisplay.innerHTML = `Generation ${generation += 1}`));
+    (generationDisplay.innerHTML = `Generation ${generation += 1}`);
 
   const toggleAnimationButton =
     <HTMLButtonElement>document.getElementById('toggle-anim');
   toggleAnimationButton.addEventListener('click', () => {
     scene.toggleAnimation();
     toggleAnimationButton.innerHTML =
-      scene.getIsAnimating() ? '&#10074;&#10074;' : '&#9658;';
+      scene.getIsAnimating() ? PAUSE_SYMBOL : PLAY_SYMBOL;
   });
 
   const resetButton = <HTMLButtonElement>document.getElementById('reset');
   resetButton.addEventListener('click', () => {
     if (scene.getIsAnimating()) scene.toggleAnimation();
     generation = 0;
-    toggleAnimationButton.innerHTML = '&#9658;';
+    toggleAnimationButton.innerHTML = PLAY_SYMBOL;
     savePreviousFrameAsTexture(scene); // reset previous frame to noise
     render(scene, canvas, incrementGeneration);
   });

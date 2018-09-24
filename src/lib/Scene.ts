@@ -23,8 +23,8 @@ export default class Scene {
     this.gl =
       canvas.getContext('webgl', { preserveDrawingBuffer: true })
       || canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
-    this.gl.enable(this.gl.DEPTH_TEST);
-    this.gl.depthFunc(this.gl.LEQUAL);
+    // this.gl.enable(this.gl.DEPTH_TEST);
+    // this.gl.depthFunc(this.gl.LEQUAL);
     this.renderFrames = {};
     this.textures = {};
   }
