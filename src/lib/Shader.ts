@@ -8,18 +8,18 @@ enum ShaderProgramTypes {
   VECTOR4,
 }
 
-interface ShaderValue {
+interface ShaderData {
   locationName: string;
   type?: ShaderProgramTypes;
   data?: number|number[]|Float32Array;
   buffer?: WebGLBuffer;
 }
 
-export interface ShaderAttribute extends ShaderValue {
+export interface ShaderAttribute extends ShaderData {
   location?: number;
 }
 
-interface ShaderUniform extends ShaderValue {
+export interface ShaderUniform extends ShaderData {
   location?: WebGLUniformLocation;
 }
 

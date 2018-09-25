@@ -1,6 +1,12 @@
 import { FRAME_RATE } from './constants';
 import RenderFrame from './RenderFrame';
 
+
+interface DrawSceneParameters {
+  animate?: boolean;
+  firstRender?: boolean;
+}
+
 export default class Scene {
   private lastRender: number;
   private firstRender: number;
@@ -19,12 +25,12 @@ export default class Scene {
     return (n & (n - 1)) === 0;
   }
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(public readonly canvas: HTMLCanvasElement) {
     this.gl =
       canvas.getContext('webgl', { preserveDrawingBuffer: true })
       || canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
-    // this.gl.enable(this.gl.DEPTH_TEST);
-    // this.gl.depthFunc(this.gl.LEQUAL);
+    this.gl.enable(this.gl.DEPTH_TEST);
+    this.gl.depthFunc(this.gl.LEQUAL);
     this.renderFrames = {};
     this.textures = {};
   }
@@ -67,9 +73,10 @@ export default class Scene {
 
   public setRenderFrame(
     key: string,
-    callback: (gl: WebGLRenderingContext) => RenderFrame,
+    renderFrame: RenderFrame | ((gl: WebGLRenderingContext) => RenderFrame),
   ) {
-    this.renderFrames[key] = callback(this.gl);
+    if (typeof renderFrame === 'function') this.renderFrames[key] = renderFrame(this.gl);
+    else this.renderFrames[key] = renderFrame;
   }
 
   public toggleAnimation() {
@@ -84,7 +91,7 @@ export default class Scene {
 
   public render({
     animate = false,
-    draw = ({ animate = false, firstRender = true }) => { },
+    draw = (_: DrawSceneParameters) => { },
   }) {
     this.isAnimating = animate;
     this.renderFn = () => {
