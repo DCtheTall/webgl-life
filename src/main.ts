@@ -181,6 +181,7 @@ document.body.onload = function main() {
   toggleAnimationButton.addEventListener('click', () => {
     if (stopped) {
       render(scene, incrementGeneration);
+      stopped = false;
     } else {
       scene.toggleAnimation();
     }
