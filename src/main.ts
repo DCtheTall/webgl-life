@@ -58,9 +58,9 @@ canvas: HTMLCanvasElement,
 
 function initCanvasWithNoise(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  const context = canvas.getContext('2d');
   for (let i = 0; i < canvas.width; i++) {
     for (let k = 0; k < canvas.height; k++) {
       context.fillStyle = Math.random() > .5 ? BLACK : WHITE;
