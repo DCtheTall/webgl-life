@@ -2,8 +2,6 @@
 
 # GPU-Accelerated Conway's Game of Life
 
-[Live demo](https://dcthetall-webgl-life.herokuapp.com)
-
 This project is a WebGL implementation of GPU-accelerated
 Conway's Game of Life. The source code is written in TypeScript
 and GLSL and is bundled with Webpack.
